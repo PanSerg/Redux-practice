@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchTasks } from './operations';
+import { addTask } from './operations';
 
 const tasksSlice = createSlice({
   name: 'tasks',
@@ -9,15 +9,15 @@ const tasksSlice = createSlice({
     error: null,
   },
   extraReducers: {
-    [fetchTasks.pending](state) {
+    [addTask.pending](state) {
       state.isLoading = true;
     },
-    [fetchTasks.fulfilled](state, action) {
+    [addTask.fulfilled](state, action) {
       state.isLoading = false;
       state.error = null;
       state.items = action.payload;
     },
-    [fetchTasks.rejected](state, action) {
+    [addTask.rejected](state, action) {
       state.isLoading = false;
       state.error = action.payload;
     },
