@@ -1,5 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { addTask } from './operations';
+import { fetchTasks, addTask, deleteTask, toggleCompleted } from './operations';
+
+const handlePending = state => {
+  state.isLoading = true;
+};
+
+const handleRejected = (state, action) => {
+  state.isLoading = false;
+  state.error = action.payload;
+};
 
 const tasksSlice = createSlice({
   name: 'tasks',
@@ -9,18 +18,40 @@ const tasksSlice = createSlice({
     error: null,
   },
   extraReducers: {
-    [addTask.pending](state) {
-      state.isLoading = true;
-    },
-    [addTask.fulfilled](state, action) {
+    [fetchTasks.pending]: handlePending,
+    [fetchTasks.fulfilled](state, action) {
       state.isLoading = false;
       state.error = null;
       state.items = action.payload;
     },
-    [addTask.rejected](state, action) {
+    [fetchTasks.rejected]: handleRejected,
+    [addTask.pending]: handlePending,
+    [addTask.fulfilled](state, action) {
       state.isLoading = false;
-      state.error = action.payload;
+      state.error = null;
+      state.items.push(action.payload);
     },
+    [addTask.rejected]: handleRejected,
+    [deleteTask.pending]: handlePending,
+    [deleteTask.fulfilled](state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const index = state.items.findIndex(
+        task => task.id === action.payload.id
+      );
+      state.items.splice(index, 1);
+    },
+    [deleteTask.rejected]: handleRejected,
+    [toggleCompleted.pending]: handlePending,
+    [toggleCompleted.fulfilled](state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const index = state.items.findIndex(
+        task => task.id === action.payload.id
+      );
+      state.items.splice(index, 1, action.payload);
+    },
+    [toggleCompleted.rejected]: handleRejected,
   },
 });
 

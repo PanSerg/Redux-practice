@@ -1,4 +1,4 @@
-export const getTasks = state => state.tasks;
+export const getTasks = state => state.tasks.items;
 
 export const getIsLoading = state => state.tasks.isLoading;
 
